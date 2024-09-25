@@ -10,6 +10,12 @@ import androidx.fragment.app.DialogFragment;
 
 public class RollLengthDialogFragment extends DialogFragment {
 
+    public interface OnRollLengthSelectedListener {
+        void onRollLengthClick(int which);
+    }
+
+    private OnRollLengthSelectedListener mListener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -17,7 +23,14 @@ public class RollLengthDialogFragment extends DialogFragment {
         builder.setTitle(R.string.pick_roll_length);
         builder.setItems(R.array.length_array, (dialog, which) -> {
             // 'which' is the zero-based index position chosen
+            mListener.onRollLengthClick(which);
         });
         return builder.create();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mListener = (OnRollLengthSelectedListener) context;
     }
 }
