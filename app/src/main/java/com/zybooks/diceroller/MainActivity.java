@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int MAX_DICE = 3;
 
+    private CountDownTimer mTimer;
+    private Menu mMenu;
     private int mVisibleDice;
     private Dice[] mDice;
     private ImageView[] mDiceImageViews;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.appbar_menu, menu);
+        mMenu = menu;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -75,9 +78,38 @@ public class MainActivity extends AppCompatActivity {
             changeDiceVisibility(3);
             showDice();
             return true;
+        }      else if (item.getItemId() == R.id.action_stop) {
+            mTimer.cancel();
+            item.setVisible(false);
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_roll) {
+            rollDice();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void rollDice() {
+        mMenu.findItem(R.id.action_stop).setVisible(true);
+
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+
+        mTimer = new CountDownTimer(2000, 100) {
+            public void onTick(long millisUntilFinished) {
+                for (int i = 0; i < mVisibleDice; i++) {
+                    mDice[i].roll();
+                }
+                showDice();
+            }
+
+            public void onFinish() {
+                mMenu.findItem(R.id.action_stop).setVisible(false);
+            }
+        }.start();
     }
 
     private void changeDiceVisibility(int numVisible) {
