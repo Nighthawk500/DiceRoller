@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GestureDetectorCompat;
+
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     private long mTimerLength = 2000;
     private int mInitX;
     private int mInitY;
+    private GestureDetectorCompat mDetector;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity
 
         showDice();
 
+
+        /*
         registerForContextMenu(mDiceImageViews[0]);
 
         // Moving finger left or right changes dice number
@@ -96,15 +102,35 @@ public class MainActivity extends AppCompatActivity
                     return true;
             }
             return false;
-        });
+        }); */
 
         // Register context menus for all dice and tag each die
         for (int i = 0; i < mDiceImageViews.length; i++) {
-            registerForContextMenu(mDiceImageViews[i]);
+            //registerForContextMenu(mDiceImageViews[i]);
             mDiceImageViews[i].setTag(i);
         }
+        mDetector = new GestureDetectorCompat(this, new DiceGestureListener());
 
+    }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    private class DiceGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            rollDice();
+            return true;
+        }
     }
 
     @Override
