@@ -1,11 +1,13 @@
 package com.zybooks.diceroller;
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import androidx.annotation.NonNull;
@@ -27,7 +29,10 @@ public class MainActivity extends AppCompatActivity
     private Dice[] mDice;
     private ImageView[] mDiceImageViews;
     private long mTimerLength = 2000;
+    private int mInitX;
 
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +57,40 @@ public class MainActivity extends AppCompatActivity
 
         registerForContextMenu(mDiceImageViews[0]);
 
+        // Moving finger left or right changes dice number
+        mDiceImageViews[0].setOnTouchListener((v, event) -> {
+            int action = event.getAction();
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    mInitX = (int) event.getX();
+                    return true;
+                case MotionEvent.ACTION_MOVE:
+                    int x = (int) event.getX();
+
+                    // See if movement is at least 20 pixels
+                    if (Math.abs(x - mInitX) >= 20) {
+                        if (x > mInitX) {
+                            mDice[0].addOne();
+                        }
+                        else {
+                            mDice[0].subtractOne();
+                        }
+                        showDice();
+                        mInitX = x;
+                    }
+
+                    return true;
+            }
+            return false;
+        });
+
         // Register context menus for all dice and tag each die
         for (int i = 0; i < mDiceImageViews.length; i++) {
             registerForContextMenu(mDiceImageViews[i]);
             mDiceImageViews[i].setTag(i);
         }
+
+
     }
 
     @Override
