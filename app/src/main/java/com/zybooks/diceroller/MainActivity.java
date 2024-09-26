@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity
                     int x = (int) event.getX();
                     int y = (int) event.getY();
 
-                    // See if movement is at least 20 pixels horizontally
-                    if (Math.abs(x - mInitX) >= 20) {
+                    // See if movement is at least 60 pixels horizontally
+                    if (Math.abs(x - mInitX) >= 60) {
                         if (x > mInitX) {
                             mDice[0].addOne();
                         }
@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity
                         mInitX = x;
                     }
 
-                    // See if movement is at least 20 pixels vertically
-                    if (Math.abs(y - mInitY) >= 20) {
+                    // See if movement is at least 60 pixels vertically
+                    if (Math.abs(y - mInitY) >= 60) {
                         if (y > mInitY) {
                             mDice[0].addOne();
                         } else {
