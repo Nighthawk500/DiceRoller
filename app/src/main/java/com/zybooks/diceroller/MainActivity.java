@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView[] mDiceImageViews;
     private long mTimerLength = 2000;
     private int mInitX;
+    private int mInitY;
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -63,11 +64,13 @@ public class MainActivity extends AppCompatActivity
             switch (action) {
                 case MotionEvent.ACTION_DOWN:
                     mInitX = (int) event.getX();
+                    mInitY = (int) event.getY();
                     return true;
                 case MotionEvent.ACTION_MOVE:
                     int x = (int) event.getX();
+                    int y = (int) event.getY();
 
-                    // See if movement is at least 20 pixels
+                    // See if movement is at least 20 pixels horizontally
                     if (Math.abs(x - mInitX) >= 20) {
                         if (x > mInitX) {
                             mDice[0].addOne();
@@ -77,6 +80,17 @@ public class MainActivity extends AppCompatActivity
                         }
                         showDice();
                         mInitX = x;
+                    }
+
+                    // See if movement is at least 20 pixels vertically
+                    if (Math.abs(y - mInitY) >= 20) {
+                        if (y > mInitY) {
+                            mDice[0].addOne();
+                        } else {
+                            mDice[0].subtractOne();
+                        }
+                        showDice();
+                        mInitY = y;
                     }
 
                     return true;
